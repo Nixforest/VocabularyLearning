@@ -10,24 +10,65 @@ using System.Runtime.InteropServices;
 
 namespace VocabularyLearning
 {
+    /// <summary>
+    /// Class Setting update
+    /// </summary>
     public partial class SettingUpdate : Form
     {
+        /// <summary>
+        /// User message
+        /// </summary>
         public int WM_USER = 0x0400;
+        /// <summary>
+        /// Refresh screen message
+        /// </summary>
         public int WM_REFRESH_SCREEN = 0x0400 + 100;
+        /// <summary>
+        /// Find window by class name and window name
+        /// </summary>
+        /// <param name="lpClassName">Class name</param>
+        /// <param name="lpWindowName">Window name</param>
+        /// <returns></returns>
         [DllImport("user32.dll")]
         public static extern int FindWindow(string lpClassName, String lpWindowName);
+        /// <summary>
+        /// Send message
+        /// </summary>
+        /// <param name="hWnd">Handle of windows receive message</param>
+        /// <param name="wMsg">Message content</param>
+        /// <param name="wParam">Word param</param>
+        /// <param name="lParam">Long param</param>
+        /// <returns></returns>
         [DllImport("user32.dll")]
         public static extern int SendMessage(IntPtr hWnd, int wMsg, IntPtr wParam, IntPtr lParam);
+        /// <summary>
+        /// Font of term 1
+        /// </summary>
         FontDialog font1 = new FontDialog();
+        /// <summary>
+        /// Font of term 2
+        /// </summary>
         FontDialog font2 = new FontDialog();
+        /// <summary>
+        /// Color of term 1
+        /// </summary>
         ColorDialog color1 = new ColorDialog();
+        /// <summary>
+        /// Color of term 2
+        /// </summary>
         ColorDialog color2 = new ColorDialog();
-
+        /// <summary>
+        /// Constructor
+        /// </summary>
         public SettingUpdate()
         {
             InitializeComponent();
         }
-
+        /// <summary>
+        /// Handle click Apply button
+        /// </summary>
+        /// <param name="sender">Sender</param>
+        /// <param name="e">Event arguments</param>
         private void btnApple_Click(object sender, EventArgs e)
         {
             //Set time interval
@@ -45,17 +86,24 @@ namespace VocabularyLearning
             VocabularyFrm.AppConfig.Term2Font = font2.Font;
             VocabularyFrm.AppConfig.Term1Color = color1.Color;
             VocabularyFrm.AppConfig.Term2Color = color2.Color;
-            int mainfrm = FindWindow(null, "VocabularyLearning");
+            int mainfrm = FindWindow(null, "8B086D72-A6D4-40C8-A1BB-EF4978231E81");
             SendMessage((IntPtr)mainfrm, WM_REFRESH_SCREEN, IntPtr.Zero, IntPtr.Zero);
         }
-
+        /// <summary>
+        /// Setting time interval
+        /// </summary>
+        /// <param name="input">Input value</param>
         private void SettingTimeInterval(string input)
         {
+            // If not input: return function
             if (input.Length <= 0) return;
+            // Get old value
             int newTimeInterval = VocabularyFrm.AppConfig.AppearTimeInterval;
             try
             {
+                // Parse value from input string
                 newTimeInterval = Int32.Parse(input);
+                // Check new value
                 if (newTimeInterval > 0 && newTimeInterval != VocabularyFrm.AppConfig.AppearTimeInterval)
                 {
                     VocabularyFrm.AppConfig.ShowTimeInterval = newTimeInterval;
@@ -69,12 +117,20 @@ namespace VocabularyLearning
             }
 
         }
-
+        /// <summary>
+        /// Handle click Close button
+        /// </summary>
+        /// <param name="sender">Sender</param>
+        /// <param name="e">Event arguments</param>
         private void btnClose_Click(object sender, EventArgs e)
         {
             this.Close();
         }
-
+        /// <summary>
+        /// Load update setting
+        /// </summary>
+        /// <param name="sender">Sender</param>
+        /// <param name="e">Event arguments</param>
         private void SettingUpdate_Load(object sender, EventArgs e)
         {
             ckbPlayRepeat.Checked = VocabularyFrm.AppConfig.PlayRepeat;
@@ -95,7 +151,11 @@ namespace VocabularyLearning
             lblFont2.ForeColor = VocabularyFrm.AppConfig.Term2Color;
             color2.Color = VocabularyFrm.AppConfig.Term2Color;
         }
-
+        /// <summary>
+        /// Handle click Font1 button
+        /// </summary>
+        /// <param name="sender">Sender</param>
+        /// <param name="e">Event arguments</param>
         private void btnFont1_Click(object sender, EventArgs e)
         {
             
@@ -106,6 +166,11 @@ namespace VocabularyLearning
             }
         }
 
+        /// <summary>
+        /// Handle click Font2 button
+        /// </summary>
+        /// <param name="sender">Sender</param>
+        /// <param name="e">Event arguments</param>
         private void btnFont2_Click(object sender, EventArgs e)
         {
             if (font2.ShowDialog() == DialogResult.OK)
@@ -114,13 +179,22 @@ namespace VocabularyLearning
                 lblFont2.Font = font2.Font;
             }
         }
-
+        /// <summary>
+        /// Show example font
+        /// </summary>
+        /// <param name="font">Font</param>
+        /// <returns>String of font</returns>
         private string FontPrint(Font font)
         {
             string str = string.Format("{0}, {1}, {2}", font.Name, font.Size, font.Style);
             return str;
         }
 
+        /// <summary>
+        /// Handle click Color1 button
+        /// </summary>
+        /// <param name="sender">Sender</param>
+        /// <param name="e">Event arguments</param>
         private void btnColor1_Click(object sender, EventArgs e)
         {
             if (color1.ShowDialog() == DialogResult.OK)
@@ -129,6 +203,11 @@ namespace VocabularyLearning
             }
         }
 
+        /// <summary>
+        /// Handle click Color2 button
+        /// </summary>
+        /// <param name="sender">Sender</param>
+        /// <param name="e">Event arguments</param>
         private void btnColor2_Click(object sender, EventArgs e)
         {
             if (color2.ShowDialog() == DialogResult.OK)

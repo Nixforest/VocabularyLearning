@@ -78,7 +78,7 @@
             this.Name = "VocabularyFrm";
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
-            this.Text = "VocabularyLearning";
+            this.Text = "8B086D72-A6D4-40C8-A1BB-EF4978231E81";
             this.MouseClick += new System.Windows.Forms.MouseEventHandler(this.VocabularyFrm_MouseClick);
             this.MouseLeave += new System.EventHandler(this.VocabularyFrm_MouseLeave);
             this.MouseHover += new System.EventHandler(this.VocabularyFrm_MouseHover);
