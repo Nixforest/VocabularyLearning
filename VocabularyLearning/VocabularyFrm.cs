@@ -270,13 +270,30 @@ namespace VocabularyLearning
                 LearnItem li = AppConfig.ListOfLearnItem[AppConfig.ItemShowedIndex];
                 if (AppConfig.IncludedImage && li.ImageSource != null)
                 {
-                    this.picImage.Load(li.ImageSource);
+                    // NguyenPT
+                    try
+                    {
+                        // Change method load image
+                        //this.picImage.Load(li.ImageSource);
+                        this.picImage.WaitOnLoad = false;
+                        this.picImage.LoadAsync(li.ImageSource);
+                    }
+                    catch (Exception)
+                    {
+                        
+                        throw;
+                    }
+                    // NguyenPT                    
                 }
                 // NguyenPT
                 else
                 {
-                    this.picImage.Image.Dispose();
-                    this.picImage.Image = null;
+                    // If last image is not null -> reset it
+                    if (this.picImage.Image != null)
+                    {
+                        this.picImage.Image.Dispose();
+                        this.picImage.Image = null;
+                    }
                 }
                 // NguyenPT
                 if (li.Content1Lang != LearningLanguage.VN)
