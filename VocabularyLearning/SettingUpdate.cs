@@ -75,6 +75,12 @@ namespace VocabularyLearning
             SettingTimeInterval(txtTimeInterval.Text);
             VocabularyFrm.AppConfig.PlayRepeat = ckbPlayRepeat.Checked;
             VocabularyFrm.AppConfig.ConfirmMode = chkConfirmMode.Checked;
+            // NguyenPT
+            VocabularyFrm.AppConfig.NoBackground = !chkBackground.Checked;
+            VocabularyFrm.AppConfig.IncludedImage = chkImage.Checked;
+            VocabularyFrm.AppConfig.Opacity = trackBarOpacity.Value / 100;
+            VocabularyFrm.AppConfig.TopMost = chkTopmost.Checked;
+            // NguyenPT
             //Random Sort
             if (ckbRandomSort.Checked)
             {
@@ -136,6 +142,12 @@ namespace VocabularyLearning
             ckbPlayRepeat.Checked = VocabularyFrm.AppConfig.PlayRepeat;
             ckbRandomSort.Checked = VocabularyFrm.AppConfig.RandomSort;
             chkConfirmMode.Checked = VocabularyFrm.AppConfig.ConfirmMode;
+            // NguyenPT
+            chkBackground.Checked = !VocabularyFrm.AppConfig.NoBackground;
+            chkImage.Checked = VocabularyFrm.AppConfig.IncludedImage;
+            chkTopmost.Checked = VocabularyFrm.AppConfig.TopMost;
+            trackBarOpacity.Value = (int)(VocabularyFrm.AppConfig.Opacity * 100);
+            // NguyenPT
             txtTimeInterval.Text = VocabularyFrm.AppConfig.ShowTimeInterval.ToString();
 
             font1.Font = VocabularyFrm.AppConfig.Term1Font;
