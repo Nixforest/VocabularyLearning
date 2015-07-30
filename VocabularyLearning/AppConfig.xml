@@ -1,0 +1,48 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<!-- User Manual
+Mouse left click: temporary hide, next item will be showed 
+Mouse right click: close application
+
+*** Application is not support multiline data in first term.
+Term separator is tab character
+Item separator is new line
+-->
+<AppConfig>
+  <PlayRepeat>1</PlayRepeat><!--bool value:   0: false, 1: true-->
+  <NoBackground>1</NoBackground><!--bool value:   0: false, 1: true-->
+  <Opacity>0.4</Opacity><!--Opacity value is 0.0 ~ 1.0. In case NoBackground is true, this value is not used-->
+  <TopMost>1</TopMost><!--bool value:   0: false, 1: true-->
+  <TermWidth>200</TermWidth>
+  <StartPosition>2</StartPosition><!--1: right bottom, 2: right center-->
+  <Term1Font size="30" isBold="false" RGB="255,0,0">Microsoft Sans Serif</Term1Font>
+  <Term2Font size="11" isBold="false" RGB="0,0,100">Tahoma</Term2Font>
+
+  <ShowTimeInterval>8000</ShowTimeInterval>
+  <AppearTimeInterval>600</AppearTimeInterval>
+  <RandomSort>1</RandomSort>  <!--bool value:   0: false, 1: true-->
+  <ConfirmMode>1</ConfirmMode>
+  <IncludeImage>1</IncludeImage><!--bool value:   0: false, 1: true-->
+  <ResourceFilePath Lang1="TH" Lang2="VN">.\ThaiAlphabet.txt</ResourceFilePath>
+  <!--access to quizlet.com, choose an interest list, 
+   on the right side, click More->Export, get link as below-->
+  <DataFromQuizlet isUse="true">
+    <SetLink Lang1="JP" Lang2="VN">http://quizlet.com/87687271/export</SetLink> 
+    <!-- <SetLink Lang1="JP" Lang2="VN">http://quizlet.com/24559389/export</SetLink>
+    <SetLink Lang1="JP" Lang2="VN">http://quizlet.com/24559406/export</SetLink>
+    <SetLink Lang1="JP" Lang2="VN">http://quizlet.com/24559418/export</SetLink>
+    <SetLink Lang1="VN" Lang2="JP">http://quizlet.com/24566327/export</SetLink>
+    <SetLink Lang1="VN" Lang2="JP">http://quizlet.com/24583778/export</SetLink>
+    <SetLink Lang1="VN" Lang2="JP">http://quizlet.com/27019657/export</SetLink>
+    <SetLink Lang1="VN" Lang2="JP">http://quizlet.com/27039932/export</SetLink>
+    <SetLink Lang1="VN" Lang2="JP">http://quizlet.com/27040308/export</SetLink>
+    <SetLink Lang1="VN" Lang2="JP">http://quizlet.com/27040530/export</SetLink>
+    <SetLink Lang1="VN" Lang2="JP">http://quizlet.com/27040806/export</SetLink>
+    <SetLink Lang1="VN" Lang2="JP">http://quizlet.com/27041242/export</SetLink>
+    <SetLink Lang1="JP" Lang2="VN">http://quizlet.com/42280833/export</SetLink>
+    <SetLink Lang1="JP" Lang2="VN">http://quizlet.com/42334643/export</SetLink>
+    <SetLink Lang1="JP" Lang2="VN">http://quizlet.com/42458806/export</SetLink>
+    <SetLink Lang1="JP" Lang2="VN">http://quizlet.com/42556640/export</SetLink>
+    <SetLink Lang1="JP" Lang2="VN">http://quizlet.com/42556669/export</SetLink>
+    <SetLink Lang1="JP" Lang2="VN">http://quizlet.com/42556842/export</SetLink> -->
+  </DataFromQuizlet>
+</AppConfig>
