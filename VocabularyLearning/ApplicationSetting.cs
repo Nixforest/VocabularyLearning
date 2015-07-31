@@ -12,18 +12,39 @@ using System.Text.RegularExpressions;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 
+
 namespace VocabularyLearning
 {
+    /// <summary>
+    /// Setting application
+    /// </summary>
     [Serializable()]
     public class ApplicationSetting : ISerializable
     {
+        /// <summary>
+        /// Link of resource
+        /// </summary>
         [Serializable()]
         public struct ResourceLink
         {
+            /// <summary>
+            /// Link
+            /// </summary>
             public string path;
+            /// <summary>
+            /// Language 1
+            /// </summary>
             public LearningLanguage Term1Lang;
+            /// <summary>
+            /// Language 2
+            /// </summary>
             public LearningLanguage Term2Lang;
 
+            /// <summary>
+            /// Constructor
+            /// </summary>
+            /// <param name="info">Information</param>
+            /// <param name="context">Context</param>
             public ResourceLink(SerializationInfo info, StreamingContext context)
             {
                 path = (string)info.GetValue("AS_Path", typeof(string));
@@ -31,6 +52,11 @@ namespace VocabularyLearning
                 Term2Lang = (LearningLanguage)info.GetValue("AS_Term2Lang", typeof(LearningLanguage));
             }
 
+            /// <summary>
+            /// Get data
+            /// </summary>
+            /// <param name="info">Information</param>
+            /// <param name="context">Context</param>
             public void GetObjectData(SerializationInfo info, StreamingContext context)
             {
                 info.AddValue("AS_Path", path);
@@ -38,34 +64,110 @@ namespace VocabularyLearning
                 info.AddValue("AS_Term2Lang", Term2Lang);
             }
         }
-
+        /// <summary>
+        /// Setting file time
+        /// </summary>
         public DateTime SettingFileTime { get; set; }
+        /// <summary>
+        /// Generate order
+        /// </summary>
         public int GeneratedOrder { get; set; }
+        /// <summary>
+        /// Get timer interval: show time
+        /// </summary>
         public int ShowTimeInterval { get; set; }
+        /// <summary>
+        /// Get timer interval: appear time
+        /// </summary>
         public int AppearTimeInterval { get; set; }
+        /// <summary>
+        /// Resource file path
+        /// </summary>
         public ResourceLink ResourceFilePath { get; set; }
+        /// <summary>
+        /// Is play repeat?
+        /// </summary>
         public bool PlayRepeat { get; set; }
+        /// <summary>
+        /// Background?
+        /// </summary>
         public bool NoBackground { get; set; }
+        /// <summary>
+        /// Get opacity property
+        /// </summary>
         public double Opacity { get; set; }
+        /// <summary>
+        /// Sort random terms
+        /// </summary>
         public bool RandomSort { get; set; }
+        /// <summary>
+        /// Get topmost option
+        /// </summary>
         public bool TopMost { get; set; }
+        /// <summary>
+        /// Show image?
+        /// </summary>
         public bool IncludedImage { get; set; }
+        /// <summary>
+        /// Width of term
+        /// </summary>
         public int TermWidth { get; set; }
+        /// <summary>
+        /// Start position
+        /// </summary>
         public int StartPosition { get; set; }
+        /// <summary>
+        /// Font of term 1
+        /// </summary>
         public Font Term1Font { get; set; }
+        /// <summary>
+        /// Font of term 2
+        /// </summary>
         public Font Term2Font { get; set; }
+        /// <summary>
+        /// Color of term 1
+        /// </summary>
         public Color Term1Color { get; set; }
+        /// <summary>
+        /// Color of term 2
+        /// </summary>
         public Color Term2Color { get; set; }
+        /// <summary>
+        /// Load from Quizlet
+        /// </summary>
         public bool IsLoadFromQuizlet { get; set; }
+        /// <summary>
+        /// Quizlet path list
+        /// </summary>
         public List<ResourceLink> QuizletPathList { get; set; }
+        /// <summary>
+        /// List learn items
+        /// </summary>
         public List<LearnItem> ListOfLearnItem { get; set; }
+        /// <summary>
+        /// List of remove learn items
+        /// </summary>
         public List<LearnItem> ListOfRemovedLearnItem { get; set; }
+        /// <summary>
+        /// Index of showed item
+        /// </summary>
         public int ItemShowedIndex { get; set; }
+        /// <summary>
+        /// Confirm mode
+        /// </summary>
         public bool ConfirmMode { get; set; }
-
+        /// <summary>
+        /// Config resource
+        /// </summary>
         public string CONFIG_RESOURCE = @".\AppConfig.xml";
+        /// <summary>
+        /// Current setting
+        /// </summary>
         public string CURRENT_SETTING = @".\CurrentAppConfig.dat";
-
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="isNewLoad"></param>
         public ApplicationSetting(bool isNewLoad = false)
         {
             if (isNewLoad)
@@ -73,7 +175,11 @@ namespace VocabularyLearning
                 LoadSetting();
             }
         }
-
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="info">Information</param>
+        /// <param name="context"></param>
         public ApplicationSetting(SerializationInfo info, StreamingContext context)
         {
             SettingFileTime = (DateTime)info.GetValue("AS_SettingFileTime", typeof(DateTime));

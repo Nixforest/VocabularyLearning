@@ -268,6 +268,14 @@ namespace VocabularyLearning
                     timerDisplay.Start();
                 }
                 LearnItem li = AppConfig.ListOfLearnItem[AppConfig.ItemShowedIndex];
+                // NguyenPT
+                // If last image is not null -> reset it
+                if (this.picImage.Image != null)
+                {
+                    this.picImage.Image.Dispose();
+                    this.picImage.Image = null;
+                }
+                // NguyenPT
                 if (AppConfig.IncludedImage && li.ImageSource != null)
                 {
                     // NguyenPT
@@ -280,22 +288,10 @@ namespace VocabularyLearning
                     }
                     catch (Exception)
                     {
-                        
-                        throw;
+                        MessageBox.Show(li.ImageSource);
                     }
                     // NguyenPT                    
                 }
-                // NguyenPT
-                else
-                {
-                    // If last image is not null -> reset it
-                    if (this.picImage.Image != null)
-                    {
-                        this.picImage.Image.Dispose();
-                        this.picImage.Image = null;
-                    }
-                }
-                // NguyenPT
                 if (li.Content1Lang != LearningLanguage.VN)
                 {
                     this.lblContent1.Text = li.Content1;
