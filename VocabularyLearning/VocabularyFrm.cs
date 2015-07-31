@@ -49,6 +49,14 @@ namespace VocabularyLearning
         public static ApplicationSetting AppConfig= new ApplicationSetting(false);
         const int MYACTION_HOTKEY_ID = 1000;
         public static bool REFRESH_SCREEN_FLAG = false;
+        /// <summary>
+        /// Flag check mouse is downing
+        /// </summary>
+        private bool    m_bIsMouseDown = false;
+        /// <summary>
+        /// Start point to move window
+        /// </summary>
+        private Point   m_startPoint = new Point(0, 0);
 
         enum KeyModifier
         {
@@ -229,7 +237,42 @@ namespace VocabularyLearning
                 this.CloseApp();
             }
         }
+        /// <summary>
+        /// Handle mouse down
+        /// </summary>
+        /// <param name="sender">Sender</param>
+        /// <param name="e">Event Arguments</param>
+        private void VocabularyFrm_MouseDown(object sender, MouseEventArgs e)
+        {
+            m_bIsMouseDown = true;
+            m_startPoint = new Point(e.X, e.Y);
+        }
+        /// <summary>
+        /// Handle mouse move
+        /// </summary>
+        /// <param name="sender">Sender</param>
+        /// <param name="e">Event Arguments</param>
+        private void VocabularyFrm_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (m_bIsMouseDown)
+            {
+                /* If mouse is downing, move window */
+                Point newPoint = new Point();
+                newPoint.X = this.Location.X - (m_startPoint.X - e.X);
+                newPoint.Y = this.Location.Y - (m_startPoint.Y - e.Y);
 
+                this.Location = newPoint;
+            }
+        }
+        /// <summary>
+        /// Handle mouse up
+        /// </summary>
+        /// <param name="sender">Sender</param>
+        /// <param name="e">Event Arguments</param>
+        private void VocabularyFrm_MouseUp(object sender, MouseEventArgs e)
+        {
+            m_bIsMouseDown = false;
+        }
         private void AppearShow()
         {
             this.Opacity = 0.0;
