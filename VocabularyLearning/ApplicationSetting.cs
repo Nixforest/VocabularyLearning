@@ -435,24 +435,44 @@ namespace VocabularyLearning
             }
         }
 
-        public void ShuffleRandomListItem()
+        //++ Mod (20150821 NguyenPT) Modify return value of function
+        //public void ShuffleRandomListItem()
+        /// <summary>
+        /// Sort shuffle list items
+        /// </summary>
+        /// <returns>List after shuffle</returns>
+        public List<LearnItem> ShuffleRandomListItem()
+        //-- Mod (20150821 NguyenPT)
         {
             List<LearnItem> randomList = new List<LearnItem>();
+            //++ Add (20150821 NguyenPT) Add list keep current learn item
+            List<LearnItem> currentList = this.ListOfLearnItem.ToList();
+            //-- Add (20150821 NguyenPT)
 
             Random r = new Random();
             int randomIndex = 0;
-            while (ListOfLearnItem.Count > 0)
+            //++ Mod (20150821 NguyenPT) Modify list keep current learn item
+            //while (ListOfLearnItem.Count > 0)
+            //{
+            //    randomIndex = r.Next(0, ListOfLearnItem.Count); //Choose a random object in the list
+            //    randomList.Add(ListOfLearnItem[randomIndex]); //add it to the new, random list
+            //    ListOfLearnItem.RemoveAt(randomIndex); //remove to avoid duplicates
+            //}
+            while (currentList.Count > 0)
             {
-                randomIndex = r.Next(0, ListOfLearnItem.Count); //Choose a random object in the list
-                randomList.Add(ListOfLearnItem[randomIndex]); //add it to the new, random list
-                ListOfLearnItem.RemoveAt(randomIndex); //remove to avoid duplicates
+                randomIndex = r.Next(0, currentList.Count);     // Choose a random object in the list
+                randomList.Add(currentList[randomIndex]);       // Add it to the new, random list
+                currentList.RemoveAt(randomIndex);              // Remove to avoid duplicates
             }
+            //-- Mod (20150821 NguyenPT)
             for (int i = 1; i <= randomList.Count; i++)
             {
                 randomList[i - 1].DisplayOrder = i;
             }
-
-            ListOfLearnItem = randomList; //return the new random list
+            //++ Mod (20150821 NguyenPT) Return list after shuffle
+            //ListOfLearnItem = randomList; //return the new random list
+            return randomList;
+            //-- Mod (20150821 NguyenPT)
         }
 
         private LearningLanguage ConvertToLanguage(string langCode)

@@ -15,7 +15,7 @@ Item separator is new line
   <TermWidth>200</TermWidth>
   <StartPosition>2</StartPosition><!--1: right bottom, 2: right center-->
   <Term1Font size="30" isBold="false" RGB="255,0,0">Microsoft Sans Serif</Term1Font>
-  <Term2Font size="11" isBold="false" RGB="0,0,100">Tahoma</Term2Font>
+  <Term2Font size="11" isBold="false" RGB="0,0,100">MS UI Gothic</Term2Font>
 
   <ShowTimeInterval>8000</ShowTimeInterval>
   <AppearTimeInterval>600</AppearTimeInterval>

@@ -20,10 +20,6 @@ namespace VocabularyLearning
         /// </summary>
         public int WM_USER = 0x0400;
         /// <summary>
-        /// Refresh screen message
-        /// </summary>
-        public int WM_REFRESH_SCREEN = 0x0400 + 100;
-        /// <summary>
         /// Find window by class name and window name
         /// </summary>
         /// <param name="lpClassName">Class name</param>
@@ -82,18 +78,29 @@ namespace VocabularyLearning
             VocabularyFrm.AppConfig.TopMost = chkTopmost.Checked;
             // NguyenPT
             //Random Sort
-            if (ckbRandomSort.Checked)
+            //++ Mod (20150821 NguyenPT) Update list items orders
+            int mainfrm = FindWindow(null, "8B086D72-A6D4-40C8-A1BB-EF4978231E81");
+            if (VocabularyFrm.AppConfig.RandomSort != ckbRandomSort.Checked)
             {
                 VocabularyFrm.AppConfig.RandomSort = ckbRandomSort.Checked;
-                VocabularyFrm.AppConfig.ShuffleRandomListItem();
+                SendMessage((IntPtr)mainfrm, VocabularyFrm.WM_REFRESH_LISTITEM, IntPtr.Zero, IntPtr.Zero);
             }
+            //if (ckbRandomSort.Checked)
+            //{
+            //    VocabularyFrm.AppConfig.RandomSort = ckbRandomSort.Checked;
+            //    VocabularyFrm.AppConfig.ShuffleRandomListItem();
+            //}
+            //-- Mod (20150821 NguyenPT)
 
             VocabularyFrm.AppConfig.Term1Font = font1.Font;
             VocabularyFrm.AppConfig.Term2Font = font2.Font;
             VocabularyFrm.AppConfig.Term1Color = color1.Color;
             VocabularyFrm.AppConfig.Term2Color = color2.Color;
-            int mainfrm = FindWindow(null, "8B086D72-A6D4-40C8-A1BB-EF4978231E81");
-            SendMessage((IntPtr)mainfrm, WM_REFRESH_SCREEN, IntPtr.Zero, IntPtr.Zero);
+            //++ Mod (20150821 NguyenPT) Move up
+            //int mainfrm = FindWindow(null, "8B086D72-A6D4-40C8-A1BB-EF4978231E81");
+            //SendMessage((IntPtr)mainfrm, WM_REFRESH_SCREEN, IntPtr.Zero, IntPtr.Zero);
+            SendMessage((IntPtr)mainfrm, VocabularyFrm.WM_REFRESH_SCREEN, IntPtr.Zero, IntPtr.Zero);
+            //-- Mod (20150821 NguyenPT)
         }
         /// <summary>
         /// Setting time interval

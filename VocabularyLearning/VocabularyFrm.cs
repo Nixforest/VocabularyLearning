@@ -15,39 +15,106 @@ using System.Runtime.Serialization.Formatters.Binary;
 
 namespace VocabularyLearning
 {
+    /// <summary>
+    /// Main window
+    /// </summary>
     public partial class VocabularyFrm : Form
     {
-        // Registers a hot key with Windows.
+        /// <summary>
+        /// Registers a hot key with Windows.
+        /// </summary>
+        /// <param name="hWnd">Window's handle</param>
+        /// <param name="id">ID</param>
+        /// <param name="fsModifiers"></param>
+        /// <param name="vk"></param>
+        /// <returns></returns>
         [DllImport("user32.dll")]
         private static extern bool RegisterHotKey(IntPtr hWnd, int id, uint fsModifiers, uint vk);
-        // Unregisters the hot key with Windows.
+        /// <summary>
+        /// Unregisters the hot key with Windows.
+        /// </summary>
+        /// <param name="hWnd"></param>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [DllImport("user32.dll")]
         private static extern bool UnregisterHotKey(IntPtr hWnd, int id);
-        public int WM_REFRESH_SCREEN = 0x0400 + 100;
-
+        /// <summary>
+        /// WTSRegisterSessionNotification
+        /// </summary>
+        /// <param name="hWnd"></param>
+        /// <param name="dwFlags"></param>
+        /// <returns></returns>
         [DllImport("WtsApi32.dll")]
         private static extern bool WTSRegisterSessionNotification(IntPtr hWnd, [MarshalAs(UnmanagedType.U4)]int dwFlags);
         [DllImport("WtsApi32.dll")]
         private static extern bool WTSUnRegisterSessionNotification(IntPtr hWnd);
-
-        private const int NOTIFY_FOR_THIS_SESSION = 0;
-        private const int WM_WTSSESSION_CHANGE = 0x2b1;
-        private const int WTS_SESSION_LOCK = 0x7;
-        private const int WTS_SESSION_UNLOCK = 0x8;
-
-
-        double OPACITY_MIN = 0.4;
-        double OPACITY_PLUS = 0.1;
-        int IMGBOX_WIDTH = 110;
-        int PADDING = 5;
-
-        public static Timer timerControl = new Timer();
-        public static Timer timerDisplay = new Timer();
-        Timer appearTimer = new Timer();
-        StatusFrm statusform;
-
+        /// <summary>
+        /// Message Refresh Screen
+        /// </summary>
+        public static const int     WM_REFRESH_SCREEN               = 0x0400 + 100;
+        /// <summary>
+        /// Message refresh list items
+        /// </summary>
+        public static const int     WM_REFRESH_LISTITEM             = 0x0400 + 101;
+        /// <summary>
+        /// NOTIFY_FOR_THIS_SESSION
+        /// </summary>
+        private const int           NOTIFY_FOR_THIS_SESSION         = 0;
+        /// <summary>
+        /// WM_WTSSESSION_CHANGE
+        /// </summary>
+        private const int           WM_WTSSESSION_CHANGE            = 0x2b1;
+        /// <summary>
+        /// WTS_SESSION_LOCK
+        /// </summary>
+        private const int           WTS_SESSION_LOCK                = 0x7;
+        /// <summary>
+        /// WTS_SESSION_UNLOCK
+        /// </summary>
+        private const int           WTS_SESSION_UNLOCK              = 0x8;
+        /// <summary>
+        /// Opacity value minus
+        /// </summary>
+        private const double        OPACITY_MIN                     = 0.4;
+        /// <summary>
+        /// Opacity value plus
+        /// </summary>
+        private const double        OPACITY_PLUS                    = 0.1;
+        /// <summary>
+        /// Width of Image box
+        /// </summary>
+        private const int           IMGBOX_WIDTH                    = 110;
+        /// <summary>
+        /// Padding value
+        /// </summary>
+        private const int           PADDING                         = 5;
+        /// <summary>
+        /// Timer control
+        /// </summary>
+        public static Timer         timerControl                    = new Timer();
+        /// <summary>
+        /// Timer display
+        /// </summary>
+        public static Timer         timerDisplay                    = new Timer();
+        /// <summary>
+        /// Appear timer
+        /// </summary>
+        public static Timer         appearTimer                     = new Timer();
+        /// <summary>
+        /// Status form
+        /// </summary>
+        public static StatusFrm     statusform;
+        /// <summary>
+        /// Application configuration
+        /// </summary>
         public static ApplicationSetting AppConfig= new ApplicationSetting(false);
-        const int MYACTION_HOTKEY_ID = 1000;
+        /// <summary>
+        /// Hot key ID
+        /// </summary>
+        public const int MYACTION_HOTKEY_ID = 1000;
+        /// <summary>
+        /// Refresh screen flag
+        /// </summary>
         public static bool REFRESH_SCREEN_FLAG = false;
         /// <summary>
         /// Flag check mouse is downing
@@ -57,7 +124,15 @@ namespace VocabularyLearning
         /// Start point to move window
         /// </summary>
         private Point   m_startPoint = new Point(0, 0);
-
+        //++ Add (20150821 NguyenPT) Add list keep current learn item
+        /// <summary>
+        /// Current learn items
+        /// </summary>
+        private List<LearnItem> m_ListOfLearnItem;
+        //-- Add (20150821 NguyenPT)
+        /// <summary>
+        /// Enum Key modifier
+        /// </summary>
         enum KeyModifier
         {
             None = 0,
@@ -66,7 +141,9 @@ namespace VocabularyLearning
             Shift = 4,
             WinKey = 8
         }
-
+        /// <summary>
+        /// Constructor
+        /// </summary>
         public VocabularyFrm()
         {
             InitializeComponent();
@@ -81,9 +158,12 @@ namespace VocabularyLearning
             RegisterHotKey(this.Handle, id, (uint)KeyModifier.Control, (uint)Keys.F1.GetHashCode());
             WTSRegisterSessionNotification(this.Handle, NOTIFY_FOR_THIS_SESSION);
         }
-
+        /// <summary>
+        /// Load configuration setting values
+        /// </summary>
         private void LoadAppConfiguration()
         {
+            /* Check if setting file is exist */
             if (File.Exists(AppConfig.CURRENT_SETTING))
             {
                 ApplicationSetting setTemp = DeSerializeObject(AppConfig.CURRENT_SETTING);
@@ -92,38 +172,59 @@ namespace VocabularyLearning
                     if (File.GetLastWriteTime(AppConfig.CONFIG_RESOURCE).CompareTo(setTemp.SettingFileTime) == 0)
                     {
                         AppConfig = setTemp;
-                        //return;
                     }
                 }
             }
-            AppConfig = new ApplicationSetting(true);
-            //Load First item
-            AppConfig.ListOfLearnItem = this.LoadData();
+            else
+            {
+                /* Setting file does not exist */
+                AppConfig = new ApplicationSetting(true);
+                /* Load First item */
+                AppConfig.ListOfLearnItem = this.LoadData();
+            }
             if (AppConfig.ListOfLearnItem.Count >= 1)
             {
                 if (AppConfig.RandomSort)
                 {
-                    AppConfig.ShuffleRandomListItem();
+                    //++ Mod (20150821 NguyenPT) Shuffle random list items
+                    //AppConfig.ShuffleRandomListItem();
+                    this.m_ListOfLearnItem = AppConfig.ShuffleRandomListItem();
+                    //-- Mod (20150821 NguyenPT)
                 }
+                //++ Add (20150821 NguyenPT) Add data to list keep current learn item
+                else
+                {
+                    this.m_ListOfLearnItem = AppConfig.ListOfLearnItem;
+                }
+                //-- Add (20150821 NguyenPT)
             }
         }
+        /// <summary>
+        /// Window Procedure
+        /// </summary>
+        /// <param name="m">Message content</param>
         protected override void WndProc(ref Message m)
         {
-            if (m.Msg == WM_REFRESH_SCREEN)
+            switch (m.Msg)
             {
-                UpdateScreen();
-            }
-            else if (m.Msg == WM_WTSSESSION_CHANGE)
-            {
-                int value = m.WParam.ToInt32();
-                if (value == WTS_SESSION_LOCK)
-                {
-                    timerControl.Stop();
-                }
-                else if (value == WTS_SESSION_UNLOCK)
-                {
-                    timerControl.Start();
-                }
+                case WM_REFRESH_SCREEN:         /* Refresh screen */
+                    UpdateScreen();
+                    break;
+                case WM_WTSSESSION_CHANGE:     /* Session change */
+                    int value = m.WParam.ToInt32();
+                    if (value == WTS_SESSION_LOCK)
+                    {
+                        timerControl.Stop();
+                    }
+                    else if (value == WTS_SESSION_UNLOCK)
+                    {
+                        timerControl.Start();
+                    }
+                    break;
+                case WM_REFRESH_LISTITEM:     /* Refresh list item */
+                    this.RefreshListItem();
+                    break;
+                default: break;
             }
 
             base.WndProc(ref m);
@@ -273,6 +374,9 @@ namespace VocabularyLearning
         {
             m_bIsMouseDown = false;
         }
+        /// <summary>
+        /// Show
+        /// </summary>
         private void AppearShow()
         {
             this.Opacity = 0.0;
@@ -294,7 +398,10 @@ namespace VocabularyLearning
         private void NextItem(object sender, EventArgs e)
         {
             Console.WriteLine(DateTime.Now.ToString("HH:mm:ss tt") + " ->Next Item");
-            if (AppConfig.ListOfLearnItem.Count == 0)
+            //++ Mod (20150821 NguyenPT) Modify list keep current learn item
+            //if (AppConfig.ListOfLearnItem.Count == 0)
+            if (this.m_ListOfLearnItem.Count == 0)
+            //-- Mod (20150821 NguyenPT)
             {
                 timerControl.Stop();
                 MessageBox.Show("Data record is empty. Application will be closed!\nPlease check your data.");
@@ -302,7 +409,10 @@ namespace VocabularyLearning
             }
             AppConfig.ItemShowedIndex++;
             if (AppConfig.ItemShowedIndex < 0) AppConfig.ItemShowedIndex = 0;
-            if (AppConfig.ItemShowedIndex < AppConfig.ListOfLearnItem.Count)
+            //++ Mod (20150821 NguyenPT) Modify list keep current learn item
+            //if (AppConfig.ItemShowedIndex < AppConfig.ListOfLearnItem.Count)
+            if (AppConfig.ItemShowedIndex < this.m_ListOfLearnItem.Count)
+            //-- Mod (20150821 NguyenPT)
             {
                 if (AppConfig.ConfirmMode && timerDisplay.Enabled)
                 {
@@ -310,15 +420,10 @@ namespace VocabularyLearning
                     timerDisplay.Stop();
                     timerDisplay.Start();
                 }
-                LearnItem li = AppConfig.ListOfLearnItem[AppConfig.ItemShowedIndex];
-                // NguyenPT
-                // If last image is not null -> reset it
-                if (this.picImage.Image != null)
-                {
-                    this.picImage.Image.Dispose();
-                    this.picImage.Image = null;
-                }
-                // NguyenPT
+                //++ Mod (20150821 NguyenPT) Modify list keep current learn item
+                //LearnItem li = AppConfig.ListOfLearnItem[AppConfig.ItemShowedIndex];
+                LearnItem li = this.m_ListOfLearnItem[AppConfig.ItemShowedIndex];
+                //-- Mod (20150821 NguyenPT)
                 if (AppConfig.IncludedImage && li.ImageSource != null)
                 {
                     // NguyenPT
@@ -334,6 +439,18 @@ namespace VocabularyLearning
                         MessageBox.Show(li.ImageSource);
                     }
                     // NguyenPT                    
+                }
+                else
+                {
+                    // NguyenPT
+                    // If last image is not null -> reset it
+                    if (this.picImage.Image != null)
+                    {
+                        this.picImage.CancelAsync();
+                        this.picImage.Image.Dispose();
+                        this.picImage.Image = null;
+                    }
+                    // NguyenPT
                 }
                 if (li.Content1Lang != LearningLanguage.VN)
                 {
@@ -612,7 +729,11 @@ namespace VocabularyLearning
                 MessageBox.Show("Save application configuration is fail.\n" + e.Message);
             }
         }
-
+        /// <summary>
+        /// Read application setting file
+        /// </summary>
+        /// <param name="filename">File name</param>
+        /// <returns>ApplicationSetting object</returns>
         public ApplicationSetting DeSerializeObject(string filename)
         {
             ApplicationSetting objectToSerialize = new ApplicationSetting(false);
@@ -657,5 +778,23 @@ namespace VocabularyLearning
             WTSUnRegisterSessionNotification(this.Handle);
             base.OnHandleDestroyed(e);
         }
+        //++ Add (20150821 NguyenPT) Add list keep current learn item
+        /// <summary>
+        /// Refresh list items
+        /// </summary>
+        public void RefreshListItem()
+        {
+            /* Shuffle */
+            if (VocabularyFrm.AppConfig.RandomSort)
+            {
+                this.m_ListOfLearnItem = VocabularyFrm.AppConfig.ShuffleRandomListItem();
+            }
+            else
+            {
+                /* Get original list items */
+                this.m_ListOfLearnItem = VocabularyFrm.AppConfig.ListOfLearnItem;
+            }
+        }
+        //-- Add (20150821 NguyenPT)
     }
 }
